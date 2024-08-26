@@ -1,15 +1,20 @@
-// 1.定义组件
-function Button() {
-    return <button>click me!</button>
-}
+import {useState} from "react";
 
 function App() {
+    // 1. 调用useState添加一个状态变量
+    // count 状态变量
+    // setCount 修改状态变量的方法
+    const [count, setCount] = useState(0);
+
+    // 2. 点击事件回调
+    function handleClick() {
+        // 作用：1.用传入的新值修改count
+        // 2. 重新使用新的count渲染UI
+        setCount(count + 1);
+    }
+
     return (<div className="App">
-        {/*2.使用组件（渲染组件）*/}
-        {/*自闭和*/}
-        <Button/>
-        {/*成对标签*/}
-        <Button></Button>
+        <button onClick={handleClick}>{count}</button>
     </div>);
 }
 
