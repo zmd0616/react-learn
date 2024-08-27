@@ -2,6 +2,7 @@ import './App.scss'
 import avatar from './images/bozai.png'
 import {useState} from "react";
 import _ from 'lodash'
+import classNames from "classnames"
 /**
  * 评论列表的渲染和操作
  *
@@ -87,8 +88,8 @@ const App = () => {
                     {tabs.map(item => (<span
                         key={item.type}
                         onClick={() => handleTabChange(item.type)}
-                        className={`nav-item ${type === item.type && `active`}`}>
-                            {item.text}
+                        className={classNames('nav-item', {active: type === item.type})}>
+                        {item.text}
                         </span>))}
                 </li>
             </ul>
