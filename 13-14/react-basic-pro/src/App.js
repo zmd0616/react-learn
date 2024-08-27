@@ -3,6 +3,8 @@ import avatar from './images/bozai.png'
 import { useState } from "react";
 import _ from 'lodash'
 import classNames from "classnames"
+import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs';
 /**
  * 评论列表的渲染和操作
  *
@@ -80,14 +82,14 @@ const App = () => {
         setCommentList([
             ...commentList,
             {
-                rpid: 100,
+                rpid: uuidv4(), //随机id
                 user: {
                     uid: '30009257',
                     avatar,
                     uname: '黑马前端',
                 },
                 content: content,
-                ctime: '10-19 09:00',
+                ctime: dayjs(new Date()).format('MM-DD hh:mm'),
                 like: 366,
             }
         ])
