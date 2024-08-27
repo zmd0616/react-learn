@@ -1,7 +1,7 @@
 import './App.scss'
 import avatar from './images/bozai.png'
 import {useState} from "react";
-
+import _ from 'lodash'
 /**
  * 评论列表的渲染和操作
  *
@@ -17,7 +17,7 @@ const list = [{
         uid: '13258165', avatar: '', uname: '周杰伦',
     }, // 评论内容
     content: '哎哟，不错哦', // 评论时间
-    ctime: '10-18 08:15', like: 88,
+    ctime: '10-18 08:15', like: 122,
 }, {
     rpid: 2, user: {
         uid: '36080105', avatar: '', uname: '许嵩',
@@ -48,7 +48,7 @@ const user = {
 const tabs = [{type: 'hot', text: '最热'}, {type: 'time', text: '最新'},]
 
 const App = () => {
-    const [commentList, setCommentList] = useState(list)
+    const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'))
 
     const handleDel = (rpid) => {
         console.log(rpid)
@@ -61,6 +61,16 @@ const App = () => {
     const handleTabChange = (type) => {
         console.log(type)
         setType(type)
+
+        // 基于列表的排序
+        if (type === 'hot') {
+            // 根据点赞数排序
+            // lodash
+            setCommentList(_.orderBy(commentList, 'like', 'desc'))
+        } else {
+            // 根据创建时间排序
+            setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
+        }
     }
 
     return (<div className="app">
