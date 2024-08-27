@@ -56,6 +56,13 @@ const App = () => {
         setCommentList(commentList.filter(item => item.rpid !== rpid))
     }
 
+    // tab 切换功能
+    const [type, setType] = useState('hot')
+    const handleTabChange = (type) => {
+        console.log(type)
+        setType(type)
+    }
+
     return (<div className="app">
         {/* 导航 Tab */}
         <div className="reply-navigation">
@@ -67,8 +74,12 @@ const App = () => {
                 </li>
                 <li className="nav-sort">
                     {/* 高亮类名： active */}
-                    <span className='nav-item'>最新</span>
-                    <span className='nav-item'>最热</span>
+                    {tabs.map(item => (<span
+                        key={item.type}
+                        onClick={() => handleTabChange(item.type)}
+                        className={`nav-item ${type === item.type && `active`}`}>
+                            {item.text}
+                        </span>))}
                 </li>
             </ul>
         </div>
@@ -123,7 +134,8 @@ const App = () => {
                                 {/* 评论数量 */}
                                 <span className="reply-time">点赞数:{item.like}</span>
                                 {/*条件 user.id === item.user.id*/}
-                                {user.uid === item.user.uid && <span className="delete-btn" onClick={()=>handleDel(item.rpid)}>
+                                {user.uid === item.user.uid &&
+                                    <span className="delete-btn" onClick={() => handleDel(item.rpid)}>
                                     删除
                                 </span>}
 
