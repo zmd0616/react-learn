@@ -1,6 +1,6 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import {useState} from "react";
+import { useState } from "react";
 import _ from 'lodash'
 import classNames from "classnames"
 /**
@@ -46,7 +46,7 @@ const user = {
  */
 
 // 导航 Tab 数组
-const tabs = [{type: 'hot', text: '最热'}, {type: 'time', text: '最新'},]
+const tabs = [{ type: 'hot', text: '最热' }, { type: 'time', text: '最新' },]
 
 const App = () => {
     const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'))
@@ -74,6 +74,25 @@ const App = () => {
         }
     }
 
+    // 发表评论
+    const [content, setContent] = useState('')
+    const handlePublish = () => {
+        setCommentList([
+            ...commentList,
+            {
+                rpid: 100,
+                user: {
+                    uid: '30009257',
+                    avatar,
+                    uname: '黑马前端',
+                },
+                content: content,
+                ctime: '10-19 09:00',
+                like: 366,
+            }
+        ])
+    }
+
     return (<div className="app">
         {/* 导航 Tab */}
         <div className="reply-navigation">
@@ -88,9 +107,9 @@ const App = () => {
                     {tabs.map(item => (<span
                         key={item.type}
                         onClick={() => handleTabChange(item.type)}
-                        className={classNames('nav-item', {active: type === item.type})}>
+                        className={classNames('nav-item', { active: type === item.type })}>
                         {item.text}
-                        </span>))}
+                    </span>))}
                 </li>
             </ul>
         </div>
@@ -101,7 +120,7 @@ const App = () => {
                 {/* 当前用户头像 */}
                 <div className="reply-box-avatar">
                     <div className="bili-avatar">
-                        <img className="bili-avatar-img" src={avatar} alt="用户头像"/>
+                        <img className="bili-avatar-img" src={avatar} alt="用户头像" />
                     </div>
                 </div>
                 <div className="reply-box-wrap">
@@ -109,10 +128,12 @@ const App = () => {
                     <textarea
                         className="reply-box-textarea"
                         placeholder="发一条友善的评论"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
                     />
                     {/* 发布按钮 */}
                     <div className="reply-box-send">
-                        <div className="send-text">发布</div>
+                        <div className="send-text" onClick={handlePublish}>发布</div>
                     </div>
                 </div>
             </div>
@@ -147,8 +168,8 @@ const App = () => {
                                 {/*条件 user.id === item.user.id*/}
                                 {user.uid === item.user.uid &&
                                     <span className="delete-btn" onClick={() => handleDel(item.rpid)}>
-                                    删除
-                                </span>}
+                                        删除
+                                    </span>}
 
                             </div>
                         </div>
