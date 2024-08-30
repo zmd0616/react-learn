@@ -1,10 +1,12 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import _ from 'lodash'
 import classNames from "classnames"
-import { v4 as uuidv4 } from 'uuid'
+import {v4 as uuidv4} from 'uuid'
 import dayjs from 'dayjs';
+import axios from "axios";
+
 /**
  * 评论列表的渲染和操作
  *
@@ -48,10 +50,21 @@ const user = {
  */
 
 // 导航 Tab 数组
-const tabs = [{ type: 'hot', text: '最热' }, { type: 'time', text: '最新' },]
+const tabs = [{type: 'hot', text: '最热'}, {type: 'time', text: '最新'},]
 
 const App = () => {
-    const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'))
+    // const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'))
+
+    // 获取接口数据渲染
+    const [commentList, setCommentList] = useState([])
+
+    useEffect(() => {
+        async function getList() {
+            const res = await axios.get('http://localhost:3004/list')
+            setCommentList(res.data)
+        }
+        getList()
+    }, [])
 
     const handleDel = (rpid) => {
         console.log(rpid)
@@ -86,7 +99,7 @@ const App = () => {
                 user: {
                     uid: '30009257',
                     avatar,
-                    uname: '黑马前端',
+                    uname: '黑马222222前端',
                 },
                 content: content,
                 ctime: dayjs(new Date()).format('MM-DD hh:mm'),
@@ -109,7 +122,7 @@ const App = () => {
                     {tabs.map(item => (<span
                         key={item.type}
                         onClick={() => handleTabChange(item.type)}
-                        className={classNames('nav-item', { active: type === item.type })}>
+                        className={classNames('nav-item', {active: type === item.type})}>
                         {item.text}
                     </span>))}
                 </li>
@@ -122,7 +135,7 @@ const App = () => {
                 {/* 当前用户头像 */}
                 <div className="reply-box-avatar">
                     <div className="bili-avatar">
-                        <img className="bili-avatar-img" src={avatar} alt="用户头像" />
+                        <img className="bili-avatar-img" src={avatar} alt="用户头像"/>
                     </div>
                 </div>
                 <div className="reply-box-wrap">
