@@ -1,9 +1,9 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import _ from 'lodash'
 import classNames from "classnames"
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs';
 import axios from "axios";
 
@@ -50,11 +50,12 @@ const user = {
  */
 
 // 导航 Tab 数组
-const tabs = [{type: 'hot', text: '最热'}, {type: 'time', text: '最新'},]
+const tabs = [{ type: 'hot', text: '最热' }, { type: 'time', text: '最新' },]
 
-const App = () => {
-    // const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'))
-
+// 1. 编写use开头的函数
+// 2. 把逻辑挪过去
+// 3. return数据和方法
+function useGetList() {
     // 获取接口数据渲染
     const [commentList, setCommentList] = useState([])
 
@@ -63,8 +64,53 @@ const App = () => {
             const res = await axios.get('http://localhost:3004/list')
             setCommentList(res.data)
         }
+
         getList()
     }, [])
+
+    return {
+        commentList, setCommentList
+    }
+}
+
+function Item({ item, onDel }) {
+    return (
+        <div className="reply-item">
+            {/* 头像 */}
+            <div className="root-reply-avatar">
+                <div className="bili-avatar">
+                    <img
+                        className="bili-avatar-img"
+                        alt=""
+                        src={item.user.avatar}
+                    />
+                </div>
+            </div>
+
+            <div className="content-wrap">
+                {/* 用户名 */}
+                <div className="user-info">
+                    <div className="user-name">{item.user.name}</div>
+                </div>
+                {/* 评论内容 */}
+                <div className="root-reply">
+                    <span className="reply-content">{item.content}</span>
+                    <div className="reply-info">
+                        {/* 评论时间 */}
+                        <span className="reply-time">{item.ctime}</span>
+                        {/* 评论数量 */}
+                        <span className="reply-time">点赞数:{item.like}</span>
+                        {/*条件 user.id === item.user.id*/}
+                        {user.uid === item.user.uid && <span className="delete-btn" onClick={() => onDel(item.rpid)}>删除</span>}
+
+                    </div>
+                </div>
+            </div>
+        </div>);
+}
+
+const App = () => {
+    const { commentList, setCommentList } = useGetList()
 
     const handleDel = (rpid) => {
         console.log(rpid)
@@ -92,20 +138,12 @@ const App = () => {
     // 发表评论
     const [content, setContent] = useState('')
     const handlePublish = () => {
-        setCommentList([
-            ...commentList,
-            {
-                rpid: uuidv4(), //随机id
-                user: {
-                    uid: '30009257',
-                    avatar,
-                    uname: '黑马222222前端',
-                },
-                content: content,
-                ctime: dayjs(new Date()).format('MM-DD hh:mm'),
-                like: 366,
-            }
-        ])
+        setCommentList([...commentList, {
+            rpid: uuidv4(), //随机id
+            user: {
+                uid: '30009257', avatar, uname: '黑马222222前端',
+            }, content: content, ctime: dayjs(new Date()).format('MM-DD hh:mm'), like: 366,
+        }])
     }
 
     return (<div className="app">
@@ -122,7 +160,7 @@ const App = () => {
                     {tabs.map(item => (<span
                         key={item.type}
                         onClick={() => handleTabChange(item.type)}
-                        className={classNames('nav-item', {active: type === item.type})}>
+                        className={classNames('nav-item', { active: type === item.type })}>
                         {item.text}
                     </span>))}
                 </li>
@@ -135,7 +173,7 @@ const App = () => {
                 {/* 当前用户头像 */}
                 <div className="reply-box-avatar">
                     <div className="bili-avatar">
-                        <img className="bili-avatar-img" src={avatar} alt="用户头像"/>
+                        <img className="bili-avatar-img" src={avatar} alt="用户头像" />
                     </div>
                 </div>
                 <div className="reply-box-wrap">
@@ -155,41 +193,7 @@ const App = () => {
             {/* 评论列表 */}
             <div className="reply-list">
                 {/* 评论项 */}
-                {commentList.map(item => (<div key={item.rpid} className="reply-item">
-                    {/* 头像 */}
-                    <div className="root-reply-avatar">
-                        <div className="bili-avatar">
-                            <img
-                                className="bili-avatar-img"
-                                alt=""
-                                src={item.user.avatar}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="content-wrap">
-                        {/* 用户名 */}
-                        <div className="user-info">
-                            <div className="user-name">{item.user.name}</div>
-                        </div>
-                        {/* 评论内容 */}
-                        <div className="root-reply">
-                            <span className="reply-content">{item.content}</span>
-                            <div className="reply-info">
-                                {/* 评论时间 */}
-                                <span className="reply-time">{item.ctime}</span>
-                                {/* 评论数量 */}
-                                <span className="reply-time">点赞数:{item.like}</span>
-                                {/*条件 user.id === item.user.id*/}
-                                {user.uid === item.user.uid &&
-                                    <span className="delete-btn" onClick={() => handleDel(item.rpid)}>
-                                        删除
-                                    </span>}
-
-                            </div>
-                        </div>
-                    </div>
-                </div>))}
+                {commentList.map(item => <Item key={item.rpid} item={item} onDel={handleDel} />)}
             </div>
         </div>
     </div>)
