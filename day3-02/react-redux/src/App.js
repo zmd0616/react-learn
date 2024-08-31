@@ -1,10 +1,10 @@
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 function App() {
-  const { count } = useSelector(state => state.counter)
+  // const { count } = useSelector(state => state.counter)
   return (
     <div className="App">
-      {count}
+      <button>hello</button>
     </div >
   );
 }
